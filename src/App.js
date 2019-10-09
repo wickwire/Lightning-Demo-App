@@ -52,6 +52,28 @@ export default class App extends ux.App {
     $onItemSelect({item}){
         this._setState("Loading");
         this.tag("Details").asset = item;
+
+        var xmlhttp = new XMLHttpRequest();
+        var url = "http://192.168.1.176/Service/IOConnector/4/";
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+
+        xmlhttp.onload = function() {
+          if (xmlhttp.status != 200) { // HTTP error?
+            // handle error
+            alert( 'Error: ' + xmlhttp.status);
+            return;
+          }
+
+          // get the response from xhr.response
+          var currentPinVal = JSON.parse(xmlhttp.response).value;
+          console.log("currentPinVal: " + currentPinVal);
+          currentPinVal = (currentPinVal === 1) ? 0 : 1;
+          var postURL = url + currentPinVal;
+            xmlhttp.open("POST", postURL, true);
+            xmlhttp.send();
+        };
+
     }
 
     _populate(data){
